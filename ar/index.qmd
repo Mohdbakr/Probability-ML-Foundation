@@ -1,0 +1,23 @@
+---
+title: "الرياضيات وراء قراراتك"
+sidebar: false
+page-layout: full
+---
+
+::: {.hero-section}
+
+::: {.hero-eyebrow}
+سلسلة من 12 أسبوعاً للمهنيين
+:::
+
+::: {.hero-headline}
+الرياضيات وراء كل قرار عمل اتخذته بالفعل
+:::
+
+::: {.hero-subtitle}
+قريباً — النسخة العربية قيد الإعداد.
+:::
+
+[الأسبوع الأول: تكييف الاحتمالات وبايز](../content/ar/week-01-conditioning.qmd){.btn .btn-primary}
+
+:::
