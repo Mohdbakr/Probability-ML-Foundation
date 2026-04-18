@@ -1,7 +1,6 @@
-name: Build and Deploy Website and PDF
+name: Build and Deploy Website
 on:
   push:
-    # Runs on pushes targeting the default branch
     branches: [ main ]
 env:
   # `BASE_URL` determines the website is served from, including CSS & JS assets
@@ -18,6 +17,7 @@ permissions:
 concurrency:
   group: "pages"
   cancel-in-progress: false
+
 jobs:
   deploy:
     environment:
@@ -29,7 +29,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/configure-pages@v3
-      - uses: typst-community/setup-typst@v4
+      - uses: quarto-dev/quarto-actions/setup@v2
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -39,13 +39,12 @@ jobs:
       - name: Install Python dependencies
         run: uv sync --frozen
 
-      - name: Build HTML
-        run: jupyter book build --execute --html
-
-      - name: Upload Output HTML as Artifact
+      - name: Render site
+        run: quarto render
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./_build/html"
+          path: "./_site"
 
       - name: Deploy to GitHub Pages
         id: deployment
