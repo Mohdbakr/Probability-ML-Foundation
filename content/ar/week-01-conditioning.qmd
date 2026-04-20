@@ -1,0 +1,312 @@
+---
+title: "الأسبوع الأول: التكييف الاحتمالي ونظرية بايز"
+subtitle: "كيف يفكر المدققون باحتمالية مشروطة — والمعادلة الكامنة وراءها"
+author: Mohamed Bakr
+date: 2026-04-13
+lang: ar
+jupyter: python3
+format:
+    html:
+        code-fold: true
+---
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+> **English version:** [Read this lesson in English](../en/week-01-conditioning)
+>
+> [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Mohdbakr/Probability-ML-Foundation/blob/main/content/ar/week-01-conditioning.ipynb)
+
+---
+
+## المشكلة العملية
+
+فريقك يراجع **4,200 فاتورة** من الموردين هذا الربع. وصلت فاتورة بقيمة 47,000 دولار من مورد مسجّل منذ ثلاثة أسابيع فقط.
+
+خبرتك تقول: صعِّد هذه الحالة. لكن إذا صعّدت كل فاتورة كبيرة من مورد جديد، سيقضي فريقك وقته في تتبع إيجابيات كاذبة. وإن رفعت السقف كثيراً، ستمر عمليات الاحتيال الحقيقية دون رصد.
+
+اتخذت هذا الحكم مئات المرات بالحدس. **الاحتمال المشروط** هو الرياضيات التي تجسّد هذا الحكم، و**نظرية بايز** هي التي تتيح لك تحديثه كلما وصل دليل جديد — وهي المحرك الرياضي الذي يقف خلف كل نموذج لرصد الاحتيال.
+
+---
+
+</div>
+
+## Setup
+
+```{code-cell} python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+BRAND_PALETTE = {
+    "navy":     "#0B1F3A",
+    "teal":     "#14B8A6",
+    "gold":     "#C5A46D",
+    "charcoal": "#111827",
+    "offwhite": "#F9FAFB",
+    "green":    "#72994E",
+    "orange":   "#EE6331",
+    "burgundy": "#9A4665",
+}
+
+plt.rcParams.update({
+    "figure.facecolor": BRAND_PALETTE["offwhite"],
+    "axes.facecolor":   BRAND_PALETTE["offwhite"],
+    "axes.edgecolor":   BRAND_PALETTE["charcoal"],
+    "text.color":       BRAND_PALETTE["charcoal"],
+    "axes.titlecolor":  BRAND_PALETTE["navy"],
+    "axes.labelcolor":  BRAND_PALETTE["charcoal"],
+    "figure.dpi":       120,
+})
+```
+
+---
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+## ١. الاحتمال المشترك: جدول التدقيق
+
+في الربع الماضي راجع فريقك كل فاتورة وأكد كل حالة احتيال. هذه هي النتائج:
+
+| | **احتيال** | **مشروعة** | **المجموع** |
+|---|---|---|---|
+| **مورد جديد (أقل من 90 يومًا)** | 28 | 372 | 400 |
+| **مورد راسخ (90 يومًا أو أكثر)** | 12 | 3,788 | 3,800 |
+| **المجموع** | 40 | 4,160 | 4,200 |
+
+</div>
+
+```{code-cell} python
+counts = np.array([[28, 372], [12, 3788]])
+total  = counts.sum()
+
+p_fraud_new   = counts[0, 0] / total
+p_fraud_estab = counts[1, 0] / total
+print(f"P(fraud ∩ new vendor)        = {p_fraud_new:.4f}  ({p_fraud_new*100:.2f}%)")
+print(f"P(fraud ∩ established)       = {p_fraud_estab:.4f}  ({p_fraud_estab*100:.2f}%)")
+```
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+**الاحتمال المشترك** هو نسبة الحالات التي تنتمي إلى فئتين في الوقت ذاته:
+
+</div>
+
+$$P(\text{fraud} \cap \text{new vendor}) = \frac{28}{4200} \approx 0.0067$$
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+بمعنى بسيط: **0.67% من إجمالي الفواتير** كانت احتيالًا ومن مورد جديد في آنٍ واحد.
+
+---
+
+## ٢. الاحتمال المشروط: P(fraud | new vendor)
+
+السؤال العملي ليس "ما مدى شيوع هذا التوليف؟" بل: **إذا علمتُ أن هذه الفاتورة من مورد جديد، فما احتمال كونها احتيالًا؟**
+
+</div>
+
+$$P(\text{fraud} \mid \text{new vendor}) = \frac{P(\text{fraud} \cap \text{new vendor})}{P(\text{new vendor})} = \frac{28}{400} = 0.07$$
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+بمعنى بسيط: **7% من فواتير الموردين الجدد احتيالية** — أربعة عشر ضعف المعدل العام.
+
+</div>
+
+```{code-cell} python
+p_fraud_given_new   = counts[0, 0] / counts[0].sum()
+p_fraud_given_estab = counts[1, 0] / counts[1].sum()
+p_fraud_baseline    = counts[:, 0].sum() / total
+
+print(f"P(fraud | new vendor)    = {p_fraud_given_new:.4f}  ({p_fraud_given_new*100:.1f}%)")
+print(f"P(fraud | established)   = {p_fraud_given_estab:.6f}  ({p_fraud_given_estab*100:.3f}%)")
+print(f"P(fraud) overall         = {p_fraud_baseline:.4f}  ({p_fraud_baseline*100:.2f}%)")
+print(f"\nNew vendors are {p_fraud_given_new / p_fraud_baseline:.0f}× more likely to be fraudulent")
+```
+
+```{code-cell} python
+fig, ax = plt.subplots(figsize=(7, 4))
+rates   = [p_fraud_baseline * 100, p_fraud_given_estab * 100, p_fraud_given_new * 100]
+xlabels = ["الإجمالي\n(المعدل العام)", "الموردون الراسخون", "الموردون الجدد\n(أقل من 90 يومًا)"]
+bars = ax.bar(xlabels, rates,
+              color=[BRAND_PALETTE["charcoal"], BRAND_PALETTE["teal"], BRAND_PALETTE["orange"]],
+              width=0.5)
+ax.set_ylabel("معدل الاحتيال (%)")
+ax.set_title("معدل الاحتيال المشروط حسب نوع المورد", fontweight="bold")
+for bar, rate in zip(bars, rates):
+    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.05,
+            f"{rate:.2f}%", ha="center", va="bottom", fontweight="bold")
+ax.set_ylim(0, max(rates) * 1.3)
+plt.tight_layout()
+plt.show()
+```
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+**ملخص الرسم البياني:** ثلاثة أعمدة تُظهر معدل الاحتيال حسب نوع المورد. الموردون الجدد (برتقالي، 7.0%) أعلى بأربعة عشر ضعفًا من الموردين الراسخين (فيروزي، 0.32%)، وكلاهما أعلى بكثير من المعدل العام (فحمي، 0.95%).
+
+---
+
+## ٣. نظرية بايز: تحديث تقدير المخاطر بعد وصول الدليل
+
+معلومة جديدة: قيمة الفاتورة **تتجاوز 10,000 دولار**. من البيانات التاريخية تعلم أن الفواتير الكبيرة تظهر بنسبة أعلى في حالات الاحتيال. كيف يُغيّر ذلك تقديرك؟
+
+نظرية بايز تعطيك الصيغة الدقيقة:
+
+</div>
+
+$$P(\text{fraud} \mid \text{new, large}) = \frac{P(\text{large} \mid \text{fraud}) \cdot P(\text{fraud} \mid \text{new})}{P(\text{large} \mid \text{new})}$$
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+بمعنى بسيط: **تقديرك المحدَّث = مدى ملاءمة الدليل الجديد للاحتيال × تقديرك السابق ÷ مدى شيوع هذا الدليل عمومًا.**
+
+</div>
+
+```{code-cell} python
+p_large_given_fraud = 0.85
+p_large_given_legit = 0.30
+prior = p_fraud_given_new
+
+numerator   = p_large_given_fraud * prior
+denominator = (p_large_given_fraud * prior) + (p_large_given_legit * (1 - prior))
+posterior   = numerator / denominator
+
+print(f"Prior  P(fraud | new vendor):              {prior:.4f}  ({prior*100:.1f}%)")
+print(f"P(large invoice | fraud):                  {p_large_given_fraud:.2f}")
+print(f"P(large invoice | legit):                  {p_large_given_legit:.2f}")
+print(f"\nPosterior P(fraud | new + large):          {posterior:.4f}  ({posterior*100:.1f}%)")
+print(f"Multiplied by:                             {posterior/prior:.1f}×")
+```
+
+```{code-cell} python
+stages = ["المعدل العام\n(بدون معلومات)", "بعد: مورد جديد", "بعد: مورد جديد\n+ فاتورة كبيرة"]
+probs  = [p_fraud_baseline, prior, posterior]
+colors = [BRAND_PALETTE["charcoal"], BRAND_PALETTE["teal"], BRAND_PALETTE["orange"]]
+
+fig, ax = plt.subplots(figsize=(8, 4))
+bars = ax.bar(stages, [p * 100 for p in probs], color=colors, width=0.5)
+ax.set_ylabel("P(fraud) — %")
+ax.set_title("تحديث بايز: كيف يتطور تقدير الاحتيال مع كل دليل", fontweight="bold")
+for bar, p in zip(bars, probs):
+    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.3,
+            f"{p*100:.1f}%", ha="center", va="bottom", fontweight="bold")
+ax.set_ylim(0, max(probs) * 100 * 1.35)
+plt.tight_layout()
+plt.show()
+```
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+**ملخص الرسم البياني:** ثلاثة أعمدة تُظهر تحديث بايز خطوةً بخطوة. يبدأ احتمال الاحتيال عند 0.95% (بدون معلومات)، يرتفع إلى 7.0% بعد اكتشاف أن المورد جديد، ثم يقفز إلى ~17.3% بعد معرفة أن الفاتورة تتجاوز 10,000 دولار.
+
+---
+
+## ٤. قانون الاحتمال الكلي: تجميع المخاطر عبر الأقسام
+
+شركتك لديها ثلاثة أقسام بمعدلات احتيال مختلفة. ما المعدل الإجمالي للشركة؟
+
+</div>
+
+$$P(\text{fraud}) = \sum_{i} P(\text{fraud} \mid \text{division}_i) \cdot P(\text{division}_i)$$
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+بمعنى بسيط: المعدل الإجمالي = **المتوسط المرجَّح** لمعدلات الاحتيال في الأقسام، مرجَّحًا بحصة كل قسم من الفواتير — وهو بالضبط ما تفعله حين تبني تقدير مخاطر مرجَّحًا في تقرير التدقيق.
+
+</div>
+
+```{code-cell} python
+divisions = {
+    "المشتريات":         {"weight": 0.60, "fraud_rate": 0.008},
+    "تقنية المعلومات":   {"weight": 0.25, "fraud_rate": 0.015},
+    "المرافق":           {"weight": 0.15, "fraud_rate": 0.003},
+}
+
+p_fraud_total = sum(d["weight"] * d["fraud_rate"] for d in divisions.values())
+
+print("Division breakdown:")
+for name, d in divisions.items():
+    contribution = d["weight"] * d["fraud_rate"]
+    print(f"  {name:22s}: {d['fraud_rate']*100:.1f}% × {d['weight']*100:.0f}% "
+          f"= {contribution*100:.4f}%")
+print(f"\nP(fraud) company-wide = {p_fraud_total*100:.4f}%")
+```
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+---
+
+## ٥. تجميع كل شيء: دالة تسجيل المخاطر
+
+نجمع كل ما سبق في دالة تحسب درجة المخاطر لأي فاتورة بناءً على مجموعة من الإشارات.
+
+</div>
+
+```{code-cell} python
+def bayes_update(prior: float, p_signal_fraud: float, p_signal_legit: float) -> float:
+    """Update fraud probability given a new binary signal."""
+    num = p_signal_fraud * prior
+    den = num + p_signal_legit * (1 - prior)
+    return num / den
+
+
+score = p_fraud_total
+
+score = bayes_update(score, p_signal_fraud=0.65, p_signal_legit=0.09)
+print(f"After 'new vendor':           {score*100:.2f}%")
+
+score = bayes_update(score, p_signal_fraud=0.85, p_signal_legit=0.30)
+print(f"After 'large invoice':        {score*100:.2f}%")
+
+score = bayes_update(score, p_signal_fraud=0.70, p_signal_legit=0.12)
+print(f"After 'no PO number':         {score*100:.2f}%")
+```
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+كل استدعاء لـ `bayes_update` يعالج قطعة واحدة من الدليل. هذا بالضبط ما يفعله نموذج رصد الاحتيال في وقت الاستدلال — ليست سحرًا، بل مجرد تطبيق متسلسل لنظرية بايز.
+
+---
+
+## الخلاصة
+
+- **الاحتمال المشترك** يقيس مدى شيوع *توليفة* بعينها في جميع الحالات.
+- **الاحتمال المشروط** يجيب على السؤال العملي: بمعرفة ما أعرفه، ما احتمال هذا الحدث؟
+- **نظرية بايز** تعطيك صيغة لتحديث تقديرك مع كل دليل جديد — هذا هو الأساس الرياضي لكل نموذج لتصنيف الاحتيال في هذه السلسلة.
+- **قانون الاحتمال الكلي** يتيح لك تجميع المخاطر عبر الأقسام للحصول على الصورة الكاملة للمؤسسة.
+
+---
+
+## تمارين
+
+**١.** راجع فريقك 500 تقرير مصروفات: 20 منها احتيالية، و15 من تلك العشرين تحتوي إيصالات تتجاوز 500 دولار. من بين 480 تقريرًا مشروعًا، 120 تجاوزت فيها الإيصالات 500 دولار. احسب:
+
+</div>
+
+$$P(\text{fraud} \mid \text{receipt} > \$500)$$
+
+<div dir="rtl" style="direction: rtl; text-align: right;">
+
+**٢.** مورد لديه ثلاث إشارات خطر مستقلة: فواتير يوم الجمعة، مبالغ مستديرة، وغياب رقم طلب الشراء. انطلاقًا من الاحتمال المحدَّث في القسم الثالث (~17%) بوصفه احتمالًا سابقًا، حدِّث احتمال الاحتيال بشكل تسلسلي لكل إشارة:
+
+| الإشارة | P(signal \| fraud) | P(signal \| legit) |
+|---|---|---|
+| فاتورة يوم الجمعة | 0.40 | 0.14 |
+| مبلغ مستدير | 0.55 | 0.18 |
+| لا يوجد رقم طلب شراء | 0.70 | 0.12 |
+
+**٣.** استخدم قانون الاحتمال الكلي لحساب معدل الاحتيال على مستوى الشركة عبر أربع مناطق:
+
+| المنطقة | حصة الفواتير | معدل الاحتيال |
+|---|---|---|
+| أمريكا الشمالية | 45% | 0.9% |
+| أوروبا | 30% | 0.6% |
+| آسيا والمحيط الهادئ | 15% | 1.4% |
+| أمريكا اللاتينية | 10% | 1.8% |
+
+---
+
+</div>
+
+*Mohamed Bakr · [Portfolio](https://portfolio.mohdbakr.com) · [LinkedIn](https://www.linkedin.com/in/mohdbakr/) · MIT License*

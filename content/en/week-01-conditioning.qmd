@@ -1,0 +1,272 @@
+---
+title: "Week 1: Probability Conditioning & Bayes"
+subtitle: "How auditors already think in conditional probability — and the formula behind it"
+author: Mohamed Bakr
+date: 2026-04-13
+kernelspec:
+  name: python3
+  display_name: Python 3
+---
+
+> **النسخة العربية:** [اقرأ هذا الدرس بالعربية](../ar/week-01-conditioning)
+>
+> [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Mohdbakr/Probability-ML-Foundation/blob/main/content/en/week-01-conditioning.ipynb)
+
+---
+
+## The Business Problem
+
+Your team is reviewing **4,200 vendor invoices** this quarter. An invoice arrives: $47,000, from a vendor registered just 3 weeks ago.
+
+Your experience says escalate. But if you escalate every large invoice from a new vendor, your team spends half its time chasing false positives. Set the threshold too high and real fraud slips through.
+
+You have been making this judgment call for years. **Conditional probability** is the math behind it. **Bayes' theorem** is what lets you update that judgment as new evidence comes in — and it is the engine inside every fraud scoring model you will encounter in this series.
+
+---
+
+## Setup
+
+```{code-cell} python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+BRAND_PALETTE = {
+    "navy":     "#0B1F3A",
+    "teal":     "#14B8A6",
+    "gold":     "#C5A46D",
+    "charcoal": "#111827",
+    "offwhite": "#F9FAFB",
+    "green":    "#72994E",
+    "orange":   "#EE6331",
+    "burgundy": "#9A4665",
+}
+
+plt.rcParams.update({
+    "figure.facecolor": BRAND_PALETTE["offwhite"],
+    "axes.facecolor":   BRAND_PALETTE["offwhite"],
+    "axes.edgecolor":   BRAND_PALETTE["charcoal"],
+    "text.color":       BRAND_PALETTE["charcoal"],
+    "axes.titlecolor":  BRAND_PALETTE["navy"],
+    "axes.labelcolor":  BRAND_PALETTE["charcoal"],
+    "figure.dpi":       120,
+})
+```
+
+---
+
+## 1. Joint Probability: The Audit Contingency Table
+
+Start with last quarter's findings — every invoice reviewed, every fraud confirmed:
+
+| | Fraudulent | Legitimate | Total |
+|---|---|---|---|
+| **New vendor (< 90 days)** | 28 | 372 | 400 |
+| **Established vendor (≥ 90 days)** | 12 | 3,788 | 3,800 |
+| **Total** | 40 | 4,160 | 4,200 |
+
+```{code-cell} python
+counts = np.array([[28, 372], [12, 3788]])
+labels_row = ["New vendor", "Established vendor"]
+labels_col = ["Fraudulent", "Legitimate"]
+total = counts.sum()
+
+df = pd.DataFrame(counts, index=labels_row, columns=labels_col)
+df["Total"] = df.sum(axis=1)
+df.loc["Total"] = df.sum()
+print(df.to_string())
+print(f"\nTotal invoices reviewed: {total:,}")
+```
+
+**Joint probability** is the fraction of all cases that fall into two categories at once:
+
+$$P(\text{fraud} \cap \text{new vendor}) = \frac{28}{4200} \approx 0.0067$$
+
+In plain terms: about **0.67% of all invoices** were both fraudulent *and* from a new vendor.
+
+```{code-cell} python
+for fraud_label, col_idx in zip(labels_col, [0, 1]):
+    for vendor_label, row_idx in zip(labels_row, [0, 1]):
+        p = counts[row_idx, col_idx] / total
+        print(f"P({fraud_label} ∩ {vendor_label}) = {p:.4f}  ({p*100:.2f}%)")
+```
+
+---
+
+## 2. Conditional Probability: P(fraud | new vendor)
+
+Joint probability answers "how common is this *combination*?" Conditional probability answers the question you actually care about: **given that this invoice is from a new vendor, how likely is it fraudulent?**
+
+$$P(\text{fraud} \mid \text{new vendor}) = \frac{P(\text{fraud} \cap \text{new vendor})}{P(\text{new vendor})} = \frac{28}{400} = 0.07$$
+
+In plain terms: **7% of invoices from new vendors are fraudulent** — fourteen times the baseline rate.
+
+```{code-cell} python
+p_fraud_given_new   = counts[0, 0] / counts[0].sum()
+p_fraud_given_estab = counts[1, 0] / counts[1].sum()
+p_fraud_baseline    = counts[:, 0].sum() / total
+
+print(f"P(fraud | new vendor)    = {p_fraud_given_new:.4f}  ({p_fraud_given_new*100:.1f}%)")
+print(f"P(fraud | established)   = {p_fraud_given_estab:.6f}  ({p_fraud_given_estab*100:.3f}%)")
+print(f"P(fraud) overall         = {p_fraud_baseline:.4f}  ({p_fraud_baseline*100:.2f}%)")
+print(f"\nNew vendors are {p_fraud_given_new / p_fraud_baseline:.0f}x more likely to be fraudulent")
+```
+
+```{code-cell} python
+fig, ax = plt.subplots(figsize=(7, 4))
+rates = [p_fraud_baseline * 100, p_fraud_given_estab * 100, p_fraud_given_new * 100]
+xlabels = ["Overall\n(baseline)", "Established\nvendors", "New vendors\n(< 90 days)"]
+bars = ax.bar(xlabels, rates,
+              color=[BRAND_PALETTE["charcoal"], BRAND_PALETTE["teal"], BRAND_PALETTE["orange"]],
+              width=0.5)
+ax.set_ylabel("Fraud rate (%)")
+ax.set_title("Conditional Fraud Rate by Vendor Type", fontweight="bold")
+for bar, rate in zip(bars, rates):
+    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.05,
+            f"{rate:.2f}%", ha="center", va="bottom", fontweight="bold")
+ax.set_ylim(0, max(rates) * 1.3)
+plt.tight_layout()
+plt.show()
+```
+
+**Chart summary:** Three bars showing fraud rate by vendor type. New vendors (orange, 7.0%) are 14× higher than established vendors (teal, 0.32%), both well above the 0.95% overall baseline (charcoal).
+
+---
+
+## 3. Bayes' Theorem: Updating Fraud Risk as Evidence Arrives
+
+New information: the invoice amount is **over $10,000**. From historical data you know large invoices appear far more often in fraudulent cases. How much should this update your estimate?
+
+$$P(\text{fraud} \mid \text{new vendor, large}) = \frac{P(\text{large} \mid \text{fraud}) \cdot P(\text{fraud} \mid \text{new vendor})}{P(\text{large} \mid \text{new vendor})}$$
+
+In plain terms: **updated belief = how well the new evidence fits fraud × prior belief, divided by how common that evidence is overall.**
+
+```{code-cell} python
+p_large_given_fraud = 0.85   # 85% of fraud cases involve invoices > $10K
+p_large_given_legit = 0.30   # 30% of legitimate invoices exceed $10K
+prior = p_fraud_given_new    # 7% — our starting point
+
+numerator   = p_large_given_fraud * prior
+denominator = (p_large_given_fraud * prior) + (p_large_given_legit * (1 - prior))
+posterior   = numerator / denominator
+
+print(f"Prior  — P(fraud | new vendor):           {prior:.4f}  ({prior*100:.1f}%)")
+print(f"P(large invoice | fraud):                  {p_large_given_fraud:.2f}")
+print(f"P(large invoice | legitimate):             {p_large_given_legit:.2f}")
+print(f"\nPosterior — P(fraud | new + large):        {posterior:.4f}  ({posterior*100:.1f}%)")
+print(f"Multiplied by:                             {posterior/prior:.1f}×")
+```
+
+```{code-cell} python
+stages = ["Baseline\n(no info)", "After: new vendor", "After: new vendor\n+ large invoice"]
+probs  = [p_fraud_baseline, prior, posterior]
+colors = [BRAND_PALETTE["charcoal"], BRAND_PALETTE["teal"], BRAND_PALETTE["orange"]]
+
+fig, ax = plt.subplots(figsize=(8, 4))
+bars = ax.bar(stages, [p * 100 for p in probs], color=colors, width=0.5)
+ax.set_ylabel("P(fraud) — %")
+ax.set_title("Bayesian Updating: Fraud Probability as Evidence Accumulates", fontweight="bold")
+for bar, p in zip(bars, probs):
+    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.3,
+            f"{p*100:.1f}%", ha="center", va="bottom", fontweight="bold")
+ax.set_ylim(0, max(probs) * 100 * 1.35)
+plt.tight_layout()
+plt.show()
+```
+
+**Chart summary:** Three bars showing Bayesian updating in action. Fraud probability starts at 0.95% (no context), rises to 7.0% when we learn the vendor is new, then jumps to ~17.3% after also observing the invoice exceeds $10K.
+
+---
+
+## 4. Law of Total Probability: Combining Risk Across Business Units
+
+Your company has three divisions. Each has a different fraud rate. What is the company-wide fraud rate?
+
+$$P(\text{fraud}) = \sum_{i} P(\text{fraud} \mid \text{division}_i) \cdot P(\text{division}_i)$$
+
+In plain terms: the total fraud rate is the **weighted average** of each division's rate, weighted by its share of invoices — exactly how you'd build a risk-weighted estimate in a planning document.
+
+```{code-cell} python
+divisions = {
+    "Procurement": {"weight": 0.60, "fraud_rate": 0.008},
+    "IT":          {"weight": 0.25, "fraud_rate": 0.015},
+    "Facilities":  {"weight": 0.15, "fraud_rate": 0.003},
+}
+
+p_fraud_total = sum(d["weight"] * d["fraud_rate"] for d in divisions.values())
+
+print("Division breakdown:")
+for name, d in divisions.items():
+    contribution = d["weight"] * d["fraud_rate"]
+    print(f"  {name:14s}: {d['fraud_rate']*100:.1f}% × {d['weight']*100:.0f}% of invoices "
+          f"= {contribution*100:.4f}% contribution")
+print(f"\nP(fraud) company-wide = {p_fraud_total*100:.4f}%")
+```
+
+---
+
+## 5. Putting It Together: A Simple Risk Scoring Function
+
+Combine everything above into a function that scores any invoice given a set of risk signals.
+
+```{code-cell} python
+def bayes_update(prior: float, p_signal_given_fraud: float, p_signal_given_legit: float) -> float:
+    """Update fraud probability given a new binary signal."""
+    num = p_signal_given_fraud * prior
+    den = num + p_signal_given_legit * (1 - prior)
+    return num / den
+
+
+# Start from the company-wide baseline
+score = p_fraud_total
+
+# Invoice is from a new vendor
+score = bayes_update(score, p_signal_given_fraud=0.65, p_signal_given_legit=0.09)
+print(f"After 'new vendor':           {score*100:.2f}%")
+
+# Invoice amount > $10K
+score = bayes_update(score, p_signal_given_fraud=0.85, p_signal_given_legit=0.30)
+print(f"After 'large invoice':        {score*100:.2f}%")
+
+# No purchase order on file
+score = bayes_update(score, p_signal_given_fraud=0.70, p_signal_given_legit=0.12)
+print(f"After 'no PO number':         {score*100:.2f}%")
+```
+
+Each call to `bayes_update` is one piece of evidence processed. This is exactly how a fraud scoring model works at inference time — not magic, just Bayes applied sequentially.
+
+---
+
+## Key Takeaways
+
+- **Joint probability** measures how common a *combination* is across all cases.
+- **Conditional probability** answers the practical question: given what I already know, how likely is this?
+- **Bayes' theorem** gives you the formula to update your estimate with each new piece of evidence — the mathematical foundation of every fraud scoring model in this series.
+- **Law of total probability** lets you aggregate risk across segments to get the enterprise-wide picture from unit-level rates.
+
+---
+
+## Exercises
+
+**1.** Your team reviewed 500 expense reports: 20 were fraudulent, 15 of those had receipts over $500. Of the 480 legitimate reports, 120 had receipts over $500. Calculate $P(\text{fraud} \mid \text{receipt} > \$500)$.
+
+**2.** A vendor has three independent red flags: invoices submitted on Fridays, round-dollar amounts, and no PO number. Using the posterior from Section 3 (~17%) as your prior, update the fraud probability sequentially for each red flag. Use these signal rates:
+
+| Signal | P(signal \| fraud) | P(signal \| legit) |
+|---|---|---|
+| Friday submission | 0.40 | 0.14 |
+| Round-dollar amount | 0.55 | 0.18 |
+| No PO number | 0.70 | 0.12 |
+
+**3.** Use the Law of Total Probability to estimate company-wide fraud rate across four regions:
+
+| Region | Share of invoices | Fraud rate |
+|---|---|---|
+| North America | 45% | 0.9% |
+| Europe | 30% | 0.6% |
+| APAC | 15% | 1.4% |
+| LATAM | 10% | 1.8% |
+
+---
+
+*Mohamed Bakr · [Portfolio](https://portfolio.mohdbakr.com) · [LinkedIn](https://www.linkedin.com/in/mohdbakr/) · MIT License*

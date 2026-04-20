@@ -1,0 +1,52 @@
+---
+title: ""
+sidebar: false
+page-layout: full
+toc: false
+---
+
+## Probability & ML Foundations
+
+Statistics and ML from the ground up — each topic opened with a business problem you've already faced. For internal auditors, financial analysts, and fraud examiners. **April – July 2026.**
+
+::: {.content-list}
+
+::: {.content-item}
+::: {.content-item-meta}
+WEEK 1 · APR 13–19 · [Live]{.badge-live}
+:::
+**[Probability Conditioning & Bayes](content/en/week-01-conditioning.qmd)**
+
+Given a $10K invoice from a new vendor — what's the real fraud probability? Conditional probability · Bayes' theorem · Law of total probability.
+:::
+
+::: {.content-item .content-item-upcoming}
+::: {.content-item-meta}
+WEEK 2 · APR 20–26
+:::
+**Distributions & Uncertainty**
+
+How to model outcomes you can't observe directly.
+:::
+
+::: {.content-item .content-item-upcoming}
+::: {.content-item-meta}
+WEEK 3 · APR 27 – MAY 3
+:::
+**Maximum Likelihood & Estimation**
+
+The principle behind most ML models you already use.
+:::
+
+::: {.content-item .content-item-upcoming}
+::: {.content-item-meta}
+WEEK 4–12 · MAY – JUL
+:::
+**Hypothesis Testing · Regression · Classification · Clustering · and more**
+
+Full syllabus on the [Series page](projects.qmd).
+:::
+
+:::
+
+*New lessons published weekly. [View all projects →](projects.qmd)*

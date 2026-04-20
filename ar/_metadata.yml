@@ -4,8 +4,17 @@ include-after-body:
   text: |
     <script>
     (function () {
-      var textMap = { 'Home': 'الرئيسية', 'About': 'نبذة' };
-      var hrefMap = { '../index.html': './', '../about.html': './about.html' };
+      var textMap = { 
+        'Home': 'الرئيسية', 
+        'About': 'نبذة' ,
+        'Projects': 'مشاريع',
+        'Series': 'مقالات'
+        };
+      var hrefMap = {
+        '../index.html': './', 
+        '../about.html': './about.html',
+        '../projects.html': './projects.html' 
+       };
 
       document.querySelectorAll('.navbar-nav .nav-link').forEach(function (el) {
         var key = el.querySelector('.menu-text');
