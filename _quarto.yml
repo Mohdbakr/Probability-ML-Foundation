@@ -4,14 +4,26 @@ project:
     - "**/*.qmd"
     - "!docs/**"
     - "!_extensions/**"
+  brand: brand.yml
 
 website:
   title: "Mohamed Bakr"
+  favicon: assets/logos/logo_light.svg
   navbar:
+    logo:
+      light: assets/logos/logo_medium_dark.svg
+      dark: assets/logos/logo_medium_light.svg
+    logo-alt: "Mohamed Bakr"
     left:
       - text: "Home"
         href: index.qmd
     right:
+      - icon: globe
+        menu:
+          - text: "English"
+            href: /index.html
+          - text: "العربية"
+            href: /ar/index.html
       - text: "LinkedIn"
         href: https://www.linkedin.com/in/mohdbakr/
       - text: "GitHub"
@@ -25,5 +37,11 @@ website:
 
 format:
   html:
-    theme: flatly
+    theme:
+      light:
+        - cosmo
+        - brand
+      dark:
+        - cosmo
+        - brand
     toc: true

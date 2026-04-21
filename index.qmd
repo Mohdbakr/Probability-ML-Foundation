@@ -1,7 +1,22 @@
 ---
 title: "Mohamed Bakr"
+subtitle: "Data Scientist & ML Engineer"
+about:
+  template: trestles
+  image: assets/images/profile-pic.jpg
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/mohdbakr/
+    - icon: github
+      text: GitHub
+      href: https://github.com/Mohdbakr
+    - icon: globe
+      text: Portfolio
+      href: https://portfolio.mohdbakr.com
 sidebar: false
-page-layout: full
 ---
 
-Portfolio coming soon.
+Helping businesses make better decisions through data science, probability, and machine learning.
+
+I build educational content and practical tools that bridge the gap between statistical theory and real-world applications — in both English and Arabic.
