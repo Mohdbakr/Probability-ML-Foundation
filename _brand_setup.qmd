@@ -1,0 +1,218 @@
+```{python}
+#| label: setup-brand
+#| include: false
+
+import os, json, pathlib
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import pyfonts
+
+import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+from great_tables import GT, loc, style
+from scipy.stats import beta as beta_dist
+
+
+def get_brand_info() -> dict:
+    raw = os.environ.get("QUARTO_EXECUTE_INFO", "")
+    if not raw:
+        return {}
+    p = pathlib.Path(raw)
+    try:
+        return json.loads(p.read_text() if p.is_file() else raw)
+    except Exception:
+        return {}
+
+
+def configure_brand_fonts() -> None:
+    info = get_brand_info()
+    brand = info.get("format", {}).get("render", {}).get("brand", {})
+    doc_dir = pathlib.Path(info.get("document-path", "")).parent
+
+    for mode in ["light", "dark"]:
+        if mode not in brand:
+            continue
+        fonts = brand[mode].get("data", {}).get("typography", {}).get("fonts", [])
+        for font_spec in fonts:
+            family = font_spec.get("family", "")
+            source = font_spec.get("source", "")
+            if not family or not source or source == "system":
+                continue
+            if source == "file":
+                for f in font_spec.get("files", []):
+                    resolved = doc_dir / f.get("path", "")
+                    if resolved.exists():
+                        fm.fontManager.addfont(str(resolved))
+            elif source in ("bunny", "google"):
+                loader = pyfonts.load_bunny_font if source == "bunny" else pyfonts.load_google_font
+                fm.fontManager.addfont(loader(family).get_file())
+
+
+def _col_mix(a: str, b: str, amount: float = 0.25) -> str:
+    """Blend two hex colours. amount=0 → a, amount=1 → b."""
+    ra, ga, ba = int(a[1:3], 16), int(a[3:5], 16), int(a[5:7], 16)
+    rb, gb, bb = int(b[1:3], 16), int(b[3:5], 16), int(b[5:7], 16)
+    r = int(ra + (rb - ra) * amount)
+    g = int(ga + (gb - ga) * amount)
+    b_val = int(ba + (bb - ba) * amount)
+    return f"#{r:02x}{g:02x}{b_val:02x}"
+
+
+def _get_brand_colors(brand_mode: str = "light") -> dict:
+    """Return the processedData.color dict for a given mode — all hex, no lookups."""
+    info = get_brand_info()
+    return (
+        info.get("format", {})
+        .get("render", {})
+        .get("brand", {})
+        .get(brand_mode, {})
+        .get("processedData", {})
+        .get("color", {})
+    )
+
+
+def _get_brand_typography(brand_mode: str = "light") -> dict:
+    info = get_brand_info()
+    return (
+        info.get("format", {})
+        .get("render", {})
+        .get("brand", {})
+        .get(brand_mode, {})
+        .get("data", {})
+        .get("typography", {})
+    )
+
+
+def get_brand_palette(brand_mode: str = "light") -> list[str]:
+    info = get_brand_info()
+    palette = (
+        info.get("format", {})
+        .get("render", {})
+        .get("brand", {})
+        .get(brand_mode, {})
+        .get("data", {})
+        .get("color", {})
+        .get("palette", {})
+    )
+    return list(palette.values())
+
+
+def get_chart_colors(brand_mode: str | None = None) -> dict:
+    """Return a colour-token dict for charts.
+
+    Reads the active rendering mode from QUARTO_EXECUTE_INFO automatically.
+    All semantic keys come from processedData.color — already resolved hex.
+    """
+    info = get_brand_info()
+    mode = brand_mode or info.get("rendering", "light")
+    colors = _get_brand_colors(mode)
+
+    ink   = colors.get("foreground", "#1C1917")
+    paper = colors.get("background", "#FAFAF9")
+
+    return {
+        "mode":    mode,
+        "hero":    colors.get("primary", ink),
+        "annot":   colors.get("warning", ink),
+        "text":    ink,
+        "paper":   paper,
+        "accent":  _col_mix(ink, paper, 0.25),
+        "muted":   _col_mix(ink, paper, 0.60),
+        "sub":     _col_mix(ink, paper, 0.45),
+        "grid":    _col_mix(ink, paper, 0.85),
+        "palette": get_brand_palette(mode),
+    }
+
+
+def apply_brand_theme(mode: str | None = None, base_size: int = 10) -> None:
+    """Apply brand colours and fonts to matplotlib via plt.rcParams.update().
+
+    Reads the active rendering mode from QUARTO_EXECUTE_INFO when mode is None.
+    Sets figure and savefig backgrounds to the brand paper colour so PNGs never
+    render with a white background under the Agg backend.
+    """
+    info = get_brand_info()
+    active_mode = mode or info.get("rendering", "light")
+    colors = _get_brand_colors(active_mode)
+    typo   = _get_brand_typography(active_mode)
+
+    ink   = colors.get("foreground", "#1C1917")
+    paper = colors.get("background", "#FAFAF9")
+    base_family = typo.get("base", "sans-serif")
+
+    plt.rcParams.update({
+        "font.family":          base_family,
+        "font.size":            base_size,
+        "figure.facecolor":     paper,
+        "axes.facecolor":       "none",
+        "savefig.facecolor":    paper,
+        "savefig.transparent":  False,
+        "text.color":           ink,
+        "axes.labelcolor":      ink,
+        "xtick.color":          _col_mix(ink, paper, 0.45),
+        "ytick.color":          _col_mix(ink, paper, 0.45),
+        "axes.spines.top":      False,
+        "axes.spines.right":    False,
+        "axes.spines.left":     False,
+        "axes.spines.bottom":   False,
+        "axes.grid":            False,
+        "grid.color":           _col_mix(ink, paper, 0.85),
+        "grid.linewidth":       0.5,
+        "xtick.bottom":         False,
+        "ytick.left":           False,
+        "axes.prop_cycle":      mpl.cycler(color=get_brand_palette(active_mode) or [ink]),
+    })
+
+
+def gt_brand(data, brand_mode: str = "light") -> GT:
+    """Style a great_tables GT using processedData.color — all hex, no lookups."""
+    colors  = _get_brand_colors(brand_mode)
+    typo    = _get_brand_typography(brand_mode)
+    palette = get_brand_palette(brand_mode)
+
+    if not colors:
+        return GT(data)
+
+    ink   = colors.get("foreground", "#1C1917")
+    paper = colors.get("background", "#FAFAF9")
+    accent = _col_mix(ink, paper, 0.25)
+    base_family    = typo.get("base", "")
+    heading_family = typo.get("headings", base_family)
+
+    tbl = GT(data)
+    tbl = tbl.tab_options(
+        table_font_names=base_family,
+        table_font_color=ink,
+        table_background_color=paper,
+        column_labels_background_color=palette[0] if palette else accent,
+        column_labels_font_weight="bold",
+        table_body_border_top_color=accent,
+        table_body_border_bottom_color=accent,
+    )
+    tbl = tbl.tab_style(
+        style=style.text(font=heading_family, color=paper, weight="bold"),
+        locations=loc.column_labels(),
+    )
+    return tbl
+
+
+configure_brand_fonts()
+```
+
+```{python}
+#| label: debug-brand-colors-light
+#| eval: false
+#| include: false
+import pprint
+pprint.pprint(_get_brand_colors("light"))
+```
+
+```{python}
+#| label: debug-brand-colors-dark
+#| eval: false
+#| include: false
+import pprint
+pprint.pprint(_get_brand_colors("dark"))
+```

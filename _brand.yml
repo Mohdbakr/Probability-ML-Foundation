@@ -1,0 +1,79 @@
+meta:
+  name: Mohamed Bakr
+  license: MIT
+  link:
+    home: https://portfolio.mohdbakr.com
+    github: https://github.com/Mohdbakr
+    linkedin: https://www.linkedin.com/in/mohdbakr/
+
+logo:
+  images:
+
+    small-light:
+      path: assets/logos/logo_dark.svg
+      alt: "Mohamed Bakr"
+    small-dark:
+      path: assets/logos/logo_light.svg
+      alt: "Mohamed Bakr"
+    light:
+      path: assets/logos/logo_medium_dark.svg
+      alt: "Mohamed Bakr"
+    dark:
+      path: assets/logos/logo_medium_light.svg
+      alt: "Mohamed Bakr"
+    large-light:
+      path: assets/logos/logo_large_dark.svg
+      alt: "Mohamed Bakr"
+    large-dark:
+      path: assets/logos/logo_large_light.svg
+      alt: "Mohamed Bakr"
+    full-light:
+      path: assets/logos/logo_with_name_dark.svg
+      alt: "Mohamed Bakr"
+    full-dark:
+      path: assets/logos/logo_with_name_light.svg
+      alt: "Mohamed Bakr"
+  small:
+    light: small-light
+    dark: small-dark
+  medium:
+    light: light
+    dark: dark
+  large:
+    light: large-light
+    dark: large-dark
+
+color:
+  palette:
+    teal: "#14B8A6"
+    gold: "#C5A46D"
+    navy: "#0B1F3A"
+    charcoal: "#111827"
+    off-white: "#F9FAFB"
+
+  foreground: navy
+  background: off-white
+  primary: teal
+  secondary: gold
+  info: teal
+  warning: gold
+  light: off-white
+  dark: charcoal
+
+typography:
+  fonts:
+    - family: Inter
+      source: google
+    - family: Fira Code
+      source: google
+  base: Inter
+  headings: Inter
+  monospace: Fira Code
+  link:
+    color: teal
+
+defaults:
+  bootstrap:
+    defaults:
+      tooltip-color: $background
+      tooltip-bg: $foreground

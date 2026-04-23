@@ -1,0 +1,94 @@
+/*-- scss:defaults --*/
+
+// Brand palette references
+$teal: #14B8A6;
+$gold: #C5A46D;
+$navy: #0B1F3A;
+$charcoal: #111827;
+$off-white: #F9FAFB;
+
+/*-- scss:rules --*/
+
+// ── Light mode: dark navbar ──
+.navbar {
+    background-color: $navy !important;
+
+    .navbar-brand,
+    .navbar-nav .nav-link,
+    .navbar-toggler-icon {
+        color: $off-white !important;
+    }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link:focus {
+        color: $teal !important;
+    }
+
+    .navbar-nav .nav-link.active {
+        color: $teal !important;
+    }
+
+    // Theme toggle icon
+    .quarto-color-scheme-toggle .bi {
+        color: $off-white !important;
+    }
+
+    // Dropdown menus
+    .dropdown-menu {
+        background-color: $navy;
+        border-color: rgba($off-white, 0.15);
+
+        .dropdown-item {
+            color: $off-white;
+
+            &:hover,
+            &:focus {
+                background-color: rgba($teal, 0.15);
+                color: $teal;
+            }
+        }
+    }
+}
+
+// ── Dark mode: light navbar ──
+[data-bs-theme="dark"] {
+    .navbar {
+        background-color: $off-white !important;
+
+        .navbar-brand,
+        .navbar-nav .nav-link,
+        .navbar-toggler-icon {
+            color: $navy !important;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link:focus {
+            color: $teal !important;
+        }
+
+        .navbar-nav .nav-link.active {
+            color: $teal !important;
+        }
+
+        // Theme toggle icon
+        .quarto-color-scheme-toggle .bi {
+            color: $navy !important;
+        }
+
+        // Dropdown menus
+        .dropdown-menu {
+            background-color: $off-white;
+            border-color: rgba($navy, 0.15);
+
+            .dropdown-item {
+                color: $navy;
+
+                &:hover,
+                &:focus {
+                    background-color: rgba($teal, 0.15);
+                    color: $teal;
+                }
+            }
+        }
+    }
+}
