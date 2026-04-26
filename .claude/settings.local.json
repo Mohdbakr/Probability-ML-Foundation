@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:quarto.org)",
+      "Bash(grep -oE '\\\\[data-bs-theme=dark\\\\][^{}]{0,200}\\\\{[^}]{0,100}' _site/site_libs/bootstrap/bootstrap-dark-f8171084fde8dc31a0c06591e7d53c58.min.css)",
+      "Bash(grep -oE '<h[1-6][^>]*>[^<]{0,50}' _site/about.html)",
+      "Bash(grep -oE '<h[1-6][^>]*>[^<]{0,50}' _site/index.html)",
+      "Bash(grep -oE '\\\\{[^{}]{0,200}' _site/site_libs/bootstrap/bootstrap-dark-f8171084fde8dc31a0c06591e7d53c58.min.css)",
+      "Bash(grep *)",
+      "Bash(awk *)",
+      "WebFetch(domain:webaim.org)",
+      "WebFetch(domain:tachyons.io)",
+      "WebFetch(domain:mickael.canouil.fr)",
+      "Bash(quarto *)",
+      "Bash(.venv/Scripts/python.exe -c ' *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  },
+  "enabledPlugins": {
+    "content-creator@claude-code-skills": true,
+    "pm-skills@claude-code-skills": true,
+    "frontend-design@claude-plugins-official": true
+  }
+}

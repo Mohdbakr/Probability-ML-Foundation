@@ -1,0 +1,9 @@
+---
+title: "Bayesian Thinking"
+date: 2026-04-15
+description: "How to update beliefs with evidence — Bayes' theorem from first principles with audit and risk examples."
+categories: [probability, bayesian, statistics]
+series: "Probability Foundations"
+---
+
+Content coming soon.

@@ -1,0 +1,10 @@
+---
+pagetitle: محمد بكر - تواصل
+name: نموذج التواصل
+page-layout: article
+format:
+  html:
+    grid:
+      margin-width: 0px
+      sidebar-width: 0px
+---

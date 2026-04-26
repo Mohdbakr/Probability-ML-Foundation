@@ -1,4 +1,4 @@
-<svg width="390" height="135" viewBox="55 75 390 135" xmlns="http://www.w3.org/2000/svg">
+<svg width="390" height="175" viewBox="55 75 390 175" xmlns="http://www.w3.org/2000/svg">
   <g transform="translate(270, 120)">
     <g transform="translate(-38, 0) rotate(270)">
       <path d="M -35 -35 L 35 -35 L 0 0 L 35 35 L -35 35" fill="none" stroke="#D6C8B8" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" />
@@ -10,7 +10,9 @@
   </g>
   <g transform="translate(250, 200)">
     <text text-anchor="middle" font-family="Arial Black, sans-serif" font-size="38" letter-spacing="2">
-      <tspan fill="#D6C8B8" fill-opacity="0.5">Mohamed</tspan> <tspan fill="#D6C8B8">BAKR</tspan>
+      <tspan fill="#D6C8B8">MOHAMED</tspan> <tspan fill="#D6C8B8" fill-opacity="0.5">BAKR</tspan>
     </text>
+    <text y="35" text-anchor="middle" font-family="Verdana, sans-serif" font-weight="bold" font-size="13" fill="#FBBF24" letter-spacing="8">DATA SCIENTIST</text>
+    <line x1="-110" y1="50" x2="110" y2="50" stroke="#D6C8B8" stroke-width="1" opacity="0.2" />
   </g>
 </svg>

@@ -10,6 +10,7 @@ import pyfonts
 
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import plotly.graph_objects as go
 from great_tables import GT, loc, style
 from scipy.stats import beta as beta_dist
@@ -46,7 +47,11 @@ def configure_brand_fonts() -> None:
                     if resolved.exists():
                         fm.fontManager.addfont(str(resolved))
             elif source in ("bunny", "google"):
-                loader = pyfonts.load_bunny_font if source == "bunny" else pyfonts.load_google_font
+                loader = (
+                    pyfonts.load_bunny_font
+                    if source == "bunny"
+                    else pyfonts.load_google_font
+                )
                 fm.fontManager.addfont(loader(family).get_file())
 
 
@@ -99,6 +104,13 @@ def get_brand_palette(brand_mode: str = "light") -> list[str]:
     return list(palette.values())
 
 
+def get_semantic_colors(brand_mode: str = "light") -> dict:
+    """Return only the semantic role colors (primary, secondary, tertiary, etc.)."""
+    colors = _get_brand_colors(brand_mode)
+    keys = ["primary", "secondary", "tertiary", "success", "info", "warning", "danger"]
+    return {k: colors[k] for k in keys if k in colors}
+
+
 def get_chart_colors(brand_mode: str | None = None) -> dict:
     """Return a colour-token dict for charts.
 
@@ -109,20 +121,30 @@ def get_chart_colors(brand_mode: str | None = None) -> dict:
     mode = brand_mode or info.get("rendering", "light")
     colors = _get_brand_colors(mode)
 
-    ink   = colors.get("foreground", "#1C1917")
+    ink = colors.get("foreground", "#1C1917")
     paper = colors.get("background", "#FAFAF9")
 
+    primary = colors.get("primary", ink)
+    secondary = colors.get("secondary", ink)
+    tertiary = colors.get("tertiary", ink)
+
+    # Build palette from all semantic role colours (order: primary → danger)
+    sem = get_semantic_colors(mode)
+    palette = list(sem.values())
+
     return {
-        "mode":    mode,
-        "hero":    colors.get("primary", ink),
-        "annot":   colors.get("warning", ink),
-        "text":    ink,
-        "paper":   paper,
-        "accent":  _col_mix(ink, paper, 0.25),
-        "muted":   _col_mix(ink, paper, 0.60),
-        "sub":     _col_mix(ink, paper, 0.45),
-        "grid":    _col_mix(ink, paper, 0.85),
-        "palette": get_brand_palette(mode),
+        "mode": mode,
+        "hero": primary,
+        "secondary": secondary,
+        "tertiary": tertiary,
+        "annot": colors.get("warning", secondary),
+        "text": ink,
+        "paper": paper,
+        "accent": _col_mix(ink, paper, 0.25),
+        "muted": _col_mix(ink, paper, 0.60),
+        "sub": _col_mix(ink, paper, 0.45),
+        "grid": _col_mix(ink, paper, 0.85),
+        "palette": palette,
     }
 
 
@@ -136,49 +158,53 @@ def apply_brand_theme(mode: str | None = None, base_size: int = 10) -> None:
     info = get_brand_info()
     active_mode = mode or info.get("rendering", "light")
     colors = _get_brand_colors(active_mode)
-    typo   = _get_brand_typography(active_mode)
+    typo = _get_brand_typography(active_mode)
 
-    ink   = colors.get("foreground", "#1C1917")
+    ink = colors.get("foreground", "#1C1917")
     paper = colors.get("background", "#FAFAF9")
     base_family = typo.get("base", "sans-serif")
 
-    plt.rcParams.update({
-        "font.family":          base_family,
-        "font.size":            base_size,
-        "figure.facecolor":     paper,
-        "axes.facecolor":       "none",
-        "savefig.facecolor":    paper,
-        "savefig.transparent":  False,
-        "text.color":           ink,
-        "axes.labelcolor":      ink,
-        "xtick.color":          _col_mix(ink, paper, 0.45),
-        "ytick.color":          _col_mix(ink, paper, 0.45),
-        "axes.spines.top":      False,
-        "axes.spines.right":    False,
-        "axes.spines.left":     False,
-        "axes.spines.bottom":   False,
-        "axes.grid":            False,
-        "grid.color":           _col_mix(ink, paper, 0.85),
-        "grid.linewidth":       0.5,
-        "xtick.bottom":         False,
-        "ytick.left":           False,
-        "axes.prop_cycle":      mpl.cycler(color=get_brand_palette(active_mode) or [ink]),
-    })
+    plt.rcParams.update(
+        {
+            "font.family": base_family,
+            "font.size": base_size,
+            "figure.facecolor": "none",
+            "axes.facecolor": "none",
+            "savefig.facecolor": "none",
+            "savefig.transparent": True,
+            "text.color": ink,
+            "axes.labelcolor": ink,
+            "xtick.color": _col_mix(ink, paper, 0.45),
+            "ytick.color": _col_mix(ink, paper, 0.45),
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "axes.spines.left": False,
+            "axes.spines.bottom": False,
+            "axes.grid": False,
+            "grid.color": _col_mix(ink, paper, 0.85),
+            "grid.linewidth": 0.5,
+            "xtick.bottom": False,
+            "ytick.left": False,
+            "axes.prop_cycle": mpl.cycler(
+                color=list(get_semantic_colors(active_mode).values()) or [ink]
+            ),
+        }
+    )
 
 
 def gt_brand(data, brand_mode: str = "light") -> GT:
     """Style a great_tables GT using processedData.color — all hex, no lookups."""
-    colors  = _get_brand_colors(brand_mode)
-    typo    = _get_brand_typography(brand_mode)
+    colors = _get_brand_colors(brand_mode)
+    typo = _get_brand_typography(brand_mode)
     palette = get_brand_palette(brand_mode)
 
     if not colors:
         return GT(data)
 
-    ink   = colors.get("foreground", "#1C1917")
+    ink = colors.get("foreground", "#1C1917")
     paper = colors.get("background", "#FAFAF9")
     accent = _col_mix(ink, paper, 0.25)
-    base_family    = typo.get("base", "")
+    base_family = typo.get("base", "")
     heading_family = typo.get("headings", base_family)
 
     tbl = GT(data)
@@ -204,13 +230,17 @@ configure_brand_fonts()
 ```{python}
 #| label: debug-brand-colors-light
 #| eval: false
+#| include: false
 import pprint
+
 pprint.pprint(_get_brand_colors("light"))
 ```
 
 ```{python}
 #| label: debug-brand-colors-dark
 #| eval: false
+#| include: false
 import pprint
+
 pprint.pprint(_get_brand_colors("dark"))
 ```

@@ -1,0 +1,118 @@
+---
+title: ""
+image: assets/images/profile-pic.jpg
+image-alt: "Mohamed Bakr profile photo"
+about:
+  template: trestles
+  image-width: 14em
+  id: hero-heading
+  links:
+    - icon: linkedin
+      aria-label: "LinkedIn"
+      href: https://www.linkedin.com/in/mohdbakr/
+    - icon: github
+      aria-label: "GitHub"
+      href: https://github.com/Mohdbakr
+    - icon: globe
+      aria-label: "Portfolio"
+      href: https://portfolio.mohdbakr.com
+page-layout: full
+---
+
+::: {#hero-heading}
+<div class="d-flex flex-column align-items-center">
+![](assets/logos/logo_with_name_light.svg){.author-logo .light-content}
+![](assets/logos/logo_with_name_dark.svg){.author-logo .dark-content}
+
+<p class="about-subtitle" style="color: var(--bs-secondary); font-weight: 600; letter-spacing: 0.08em; margin-top: 0.25em; margin-bottom: 0.5em; text-align: center;">CIA · CFE · DATA SCIENTIST</p>
+</div>
+
+<div class="h1"> Thanks for stopping by! test </div>
+
+
+I build data science solutions using LLMs, RAG, NLP, and GenAI — applying ML and statistical modeling to finance, audit, and risk problems. With two decades of experience in internal audit, FP&A, and risk management, I specialise in bridging rigorous quantitative methods with the decisions practitioners already make. Certified Internal Auditor (CIA), Certified Fraud Examiner (CFE), and Master of Information and Data Science from UC Berkeley.
+
+Get in touch by [sending me a note](/contact.html)! {{< fa envelope title="Contact" >}}
+
+:::
+
+## About me
+
+::: {.grid}
+
+::: {.g-col-6}
+**Accountant turned data scientist** with a passion for applying data-driven insights to solve complex problems in finance, audit, and fraud detection. I have a unique blend of expertise in internal auditing, financial planning, and data science, allowing me to bridge the gap between business strategy and technical implementation.
+
+I enjoy using python to automate processes, build predictive models, and create interactive dashboards. My experience in audit and fraud examination has honed my skills in anomaly detection, risk assessment, and investigative analysis.
+
+When I'm not working with data, I enjoy Arabic calligraphy, hiking, and exploring new technologies in the AI space.
+
+<ul class="fa-ul">
+   <li><span class="fa-li"><i class="fa-solid fa-certificate"></i></span><a href="https://education.rstudio.com/trainers/people/canelon+silvia/">Tidyverse Instructor Certification</a> ∙ RStudio, PBC ∙ 2020</li>
+</ul>
+
+:::
+
+::: {.g-col-6}
+
+Most resources start from abstract theory and never connect it to the decisions practitioners already make. This series starts from the problem. Every topic opens with a scenario you've encountered — then shows the formula that formalizes what you already do.
+
+<ul class="fa-ul">
+  <li><span class="fa-li"><i class="bi bi-mortarboard-fill"></i></span>**Master of Information and Data Science (MIDS)** · UC Berkeley · 2025</li>
+  <li><span class="fa-li"><i class="bi bi-patch-check-fill"></i></span>**Certified Internal Auditor (CIA)** · The Institute of Internal Auditors</li>
+  <li><span class="fa-li"><i class="bi bi-patch-check-fill"></i></span>**Certified Fraud Examiner (CFE)** · Association of Certified Fraud Examiners</li>
+</ul>
+
+:::
+
+:::
+
+## Experience
+
+::: {.grid}
+
+::: {.g-col-6}
+
+### Nisum Technologies Inc. · Brea, CA
+
+**Data Scientist** · Mar 2025 – Present
+
+- Build data science solutions using LLMs, RAG, NLP, and GenAI
+- Apply statistical modeling and ML to extract actionable insights
+- Collaborate across engineering and product teams
+
+**FP&A Manager** · Nov 2018 – Feb 2025
+
+- Automated budget variance analysis and forecasting with Python
+- Built executive dashboards using Power BI
+- Quantified company goals through data-driven analysis
+
+:::
+
+::: {.g-col-6}
+
+### Magnell Associate (Newegg.com) · City of Industry, CA
+
+**Internal Auditor** · Sep 2016 – Nov 2018
+
+- Designed Python-based continuous monitoring systems
+- Used ML clustering to detect anomalies and potential fraud
+- Conducted internal fraud investigations using data mining
+
+### Foulath Holding B.S.C · Bahrain
+
+**Senior Audit Officer** · Jan 2015 – Jun 2016
+
+- Planned and executed audits using data analytics
+- Developed automated audit working paper systems
+
+:::
+
+:::
+
+## Education & Credentials
+
+
+
+## Why This Series
+Business professionals in audit, finance, and fraud already reason probabilistically — they update beliefs from evidence, detect anomalies against baselines, and estimate risk under uncertainty. The gap isn't intuition; it's formalism.

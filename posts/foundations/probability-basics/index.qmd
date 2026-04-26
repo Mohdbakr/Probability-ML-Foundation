@@ -1,0 +1,9 @@
+---
+title: "Probability Basics"
+date: 2026-04-10
+description: "Core rules of probability — sample spaces, events, and the axioms every practitioner needs."
+categories: [probability, foundations]
+series: "Probability Foundations"
+---
+
+Content coming soon.

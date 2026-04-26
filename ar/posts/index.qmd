@@ -1,0 +1,12 @@
+---
+title: "المقالات"
+listing:
+  contents:
+    - "*/index.qmd"
+    - "*/*/index.qmd"
+  type: default
+  sort: "date desc"
+  fields: [date, title, description, categories]
+sidebar: false
+toc: false
+---

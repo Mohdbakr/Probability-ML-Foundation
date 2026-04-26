@@ -1,0 +1,9 @@
+---
+title: "Conditioning and Independence"
+date: 2026-04-20
+description: "Conditional probability and independence — the engine behind Bayesian inference and audit risk models."
+categories: [probability, foundations, conditioning]
+series: "Probability Foundations"
+---
+
+Content coming soon.
