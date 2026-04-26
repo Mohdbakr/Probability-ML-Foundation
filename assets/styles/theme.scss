@@ -150,8 +150,30 @@ p:empty {
 // Back to top button
 #quarto-back-to-top {
     box-shadow: 0 .2rem .5rem body-mix(95%), 0 0 .05rem body-mix(95%);
-    color: body-mix(5%);
     bottom: 80px;
+    color: $footer-fg;
+    background-color: $footer-bg;
+    border: 1px solid rgba($footer-fg, 0.2);
+    border-radius: $_radius-md;
+    padding: 0.45rem 0.6rem;
+    transition: background $_anim-fast ease, border-color $_anim-fast ease;
+
+    &:hover {
+        background-color: lighten($footer-bg, 8%);
+        border-color: rgba($footer-fg, 0.4);
+    }
+
+    @media (max-width: $_breakpoint-md) {
+        font-size: 0;
+
+        .bi-arrow-up {
+            font-size: 1.1rem;
+        }
+
+        right: 1rem;
+        left: auto;
+        bottom: 55px;
+    }
 }
 
 // ===========================
