@@ -11,6 +11,7 @@ project:
 website:
   title: ""
   description: "Blog website"
+  site-url: https://mohdbakr.com
   page-navigation: true
   favicon: assets/logos/logo_light.svg
   back-to-top-navigation: true
