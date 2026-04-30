@@ -1,0 +1,15 @@
+---
+title: "التنبؤ بتأخر الرحلات الجوية"
+subtitle: "عالم بيانات | جامعة كاليفورنيا بيركلي | أبريل ٢٠٢٥"
+date: "2025-04-01"
+image: ../../../assets/images/projects/flight-delay.png
+image-alt: "مشروع التنبؤ بتأخر الرحلات الجوية"
+description: "مشروع تعلم آلي على Databricks يتنبأ بتأخر الرحلات الجوية الداخلية الأمريكية بتحليل الملايين من سجلات الرحلات باستخدام PySpark وMLlib."
+categories: [Machine Learning, PySpark, Databricks]
+---
+
+![التنبؤ بتأخر الرحلات الجوية](../../../assets/images/projects/flight-delay.png){.project-banner}
+
+مشروع تعلم آلي مبني على Databricks يهدف إلى التنبؤ بتأخر الرحلات الجوية الداخلية الأمريكية من خلال تحليل الملايين من سجلات الرحلات. باستخدام PySpark وMLlib، طبّقنا معالجة البيانات الموزعة ونماذج التصنيف على نطاق واسع. استُخدمت عمليات MapReduce في هندسة الميزات وتدريب النماذج لتحديد أنماط التأخير المرتبطة بالطقس وشركات الطيران وازدحام المطارات.
+
+[الموقع](https://bakr-ucb.github.io/261-Final-Project/){target="_blank" rel="noopener noreferrer"} | [العرض التقديمي النهائي](https://github.com/bakr-UCB/261-Final-Project/blob/main/reports/figures/Phase_III_Final_Presentation.pdf){target="_blank" rel="noopener noreferrer"}

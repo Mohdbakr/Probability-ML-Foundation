@@ -1,7 +1,9 @@
 ---
 title: "Projects"
 listing:
-  contents: "projects/*/index.qmd"
+  contents:
+    - "projects/*/index.qmd"
+    - "!ar/**"
   sort: date desc
   type: grid
   grid-columns: 2

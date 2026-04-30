@@ -1,0 +1,15 @@
+---
+title: "تصوير بيانات الاحتيال"
+subtitle: "خبير موضوعي وممارس تصور بيانات | جامعة كاليفورنيا بيركلي | ديسمبر ٢٠٢٤"
+date: "2024-12-01"
+image: ../../../assets/images/projects/visualization.png
+image-alt: "مشروع تصوير بيانات الاحتيال"
+description: "موقع إلكتروني يستكشف طرقاً بديلة لتمثيل بيانات حالات الاحتيال المُبلَّغ عنها باستخدام Altair، ويحلل ارتباطها بمؤشرات اجتماعية واقتصادية."
+categories: [Data Visualization, Altair, Python]
+---
+
+![تصوير بيانات الاحتيال](../../../assets/images/projects/visualization.png){.project-banner}
+
+موقع إلكتروني يستكشف طرقاً بديلة لتمثيل عدد حالات الاحتيال المُبلَّغ عنها باستخدام [Altair](https://altair-viz.github.io/){target="_blank" rel="noopener noreferrer"}. من خلال تحليل الارتباط بين حالات الاحتيال المُبلَّغ عنها ومؤشرات مثل درجات تصور الفساد ونصيب الفرد من الناتج المحلي الإجمالي ومتوسط سنوات التعليم، نسعى إلى تقديم صورة أشمل للعوامل المؤثرة في الإبلاغ عن الاحتيال واكتشافه.
+
+[الموقع](https://apps.ischool.berkeley.edu/~subhasis.das/w209/fraud){target="_blank" rel="noopener noreferrer"}
