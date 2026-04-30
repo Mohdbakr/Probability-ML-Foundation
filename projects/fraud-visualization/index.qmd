@@ -1,0 +1,15 @@
+---
+title: "Fraud Visualization"
+subtitle: "SME & Visualization Practitioner | UC Berkeley | Dec 2024"
+date: "2024-12-01"
+image: ../../assets/images/projects/visualization.png
+image-alt: "Fraud visualization project"
+description: "An interactive website exploring fraud case data through Altair visualizations, correlating reported fraud with socioeconomic indicators."
+categories: [Data Visualization, Altair, Python]
+---
+
+![Fraud Visualization](../../assets/images/projects/visualization.png){.project-banner}
+
+A website that explores alternative ways of representing the number of reported fraud cases using [Altair](https://altair-viz.github.io/){target="_blank" rel="noopener noreferrer"}. By analyzing the correlation between reported fraud cases and indicators such as corruption perception scores, GDP per capita, and average years of education, we aim to provide a more comprehensive view of the factors that influence fraud reporting and detection.
+
+[Website](https://apps.ischool.berkeley.edu/~subhasis.das/w209/fraud){target="_blank" rel="noopener noreferrer"}

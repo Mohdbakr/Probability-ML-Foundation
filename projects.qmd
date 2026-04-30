@@ -1,5 +1,12 @@
 ---
-comments: false
-date: "2021-06-01T09:00:00+00:00"
 title: "Projects"
+listing:
+  contents: "projects/*/index.qmd"
+  sort: date desc
+  type: grid
+  grid-columns: 2
+  categories: true
+  sort-ui: true
+  filter-ui: true
+  fields: [title, subtitle, image, date]
 ---

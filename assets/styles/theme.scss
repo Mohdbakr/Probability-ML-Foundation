@@ -648,6 +648,24 @@ hr {
 // ABOUT PAGE
 // ===========================
 
+// Project listing card images — consistent crop across aspect ratios
+.quarto-grid-item .thumbnail-image {
+    object-fit: cover;
+    width: 100%;
+    height: 200px !important;
+}
+
+// Project page full-width banner image
+.project-banner {
+    display: block;
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: $_radius-lg;
+    margin-bottom: 1.5rem;
+    box-shadow: $_shadow-md;
+}
+
 // Profile image with glow effect
 // Scoped to trestles template (about page)
 .quarto-about-trestles img.about-image {
