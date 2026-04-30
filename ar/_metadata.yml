@@ -23,9 +23,15 @@ include-after-body:
         '/projects.html':      '/ar/projects.html'
       };
 
+      var current = window.location.pathname.replace(/\/$/, '') || '/';
+
       document.querySelectorAll('.navbar-nav .nav-link').forEach(function (el) {
         // Language toggle is the compact icon-only item — skip it
         if (el.closest('.nav-item.compact')) return;
+
+        // Quarto's active detection runs against English hrefs, which never match
+        // /ar/* URLs — reset it so we can assign it correctly below.
+        el.classList.remove('active');
 
         // Translate nav text
         var label = el.querySelector('.menu-text');
@@ -33,19 +39,24 @@ include-after-body:
           label.textContent = textMap[label.textContent.trim()];
         }
 
-        // Remap English nav href → Arabic equivalent
+        // Remap English nav href → Arabic equivalent, then mark active if it
+        // matches the current page URL.
         var href = el.getAttribute('href');
         if (!href || href.charAt(0) === '#') return;
         try {
           var absPath = new URL(href, window.location.href).pathname;
-          // Static pages
+          var newHref = null;
           if (enToAr[absPath]) {
-            el.setAttribute('href', enToAr[absPath]);
-            return;
+            newHref = enToAr[absPath];
+          } else if (/^\/posts\//.test(absPath)) {
+            newHref = '/ar' + absPath;
           }
-          // Blog posts: /posts/slug/ → /ar/posts/slug/
-          if (/^\/posts\//.test(absPath)) {
-            el.setAttribute('href', '/ar' + absPath);
+          if (newHref) {
+            el.setAttribute('href', newHref);
+            var newPath = new URL(newHref, window.location.href).pathname.replace(/\/$/, '') || '/';
+            if (newPath === current) {
+              el.classList.add('active');
+            }
           }
         } catch (e) {}
       });
