@@ -1,0 +1,42 @@
+<header id="title-block-header" class="quarto-title-block default page-columns">
+    <div id="title-block-header-title"
+        class="quarto-title page-columns page-full page-layout-full featured-image p-4"
+        $if(image)$style="background-image: url('$image$');"$endif$
+        $if(image-alt)$role="img" aria-label="$image-alt$"$endif$>
+        <h1 class="title">$title$</h1>
+        $if(subtitle)$
+        <p class="subtitle lead">$subtitle$</p>
+        $endif$
+        $if(categories)$
+        $if(quarto-template-params.title-block-categories)$
+        <div class="quarto-categories">
+            $for(categories)$
+            <div class="quarto-category">$categories$</div>
+            $endfor$
+        </div>
+        $endif$
+        $endif$
+    </div>
+
+    $if(hide-description)$
+    $elseif(description)$
+    <div>
+        <div id="title-block-title-desc" class="description pt-4">
+            $description$
+        </div>
+    </div>
+    $endif$
+
+    $title-metadata.html()$
+
+    $if(links)$
+    <div
+        class="mt-4 d-flex flex-row flex-wrap gap-1 justify-content-center"
+        role="group" aria-label="Links">
+        $for(links)$
+        <a href="$links.url$"$if(links.target)$ target="$links.target$"$endif$$if(links.rel)$ rel="$links.rel$"$endif$ class="btn btn-secondary text-capitalize">$if(links.icon)$<i class="bi bi-$links.icon$ me-1"></i> $endif$$links.name$</a>
+        $endfor$
+    </div>
+    $endif$
+
+</header>

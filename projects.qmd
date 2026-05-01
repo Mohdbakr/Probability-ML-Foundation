@@ -1,5 +1,23 @@
 ---
-comments: false
-date: "2021-06-01T09:00:00+00:00"
 title: "Projects"
+author: ""
+comments: false
+citation: false
+description: |
+  This page showcases a selection of projects that I have worked on, spanning various domains such as data science, machine learning, and software development. Each project includes a brief description, the technologies used, and links to the project website or documentation where applicable. These projects reflect my skills and interests in applying data-driven solutions to real-world problems.
+listing:
+  contents:
+    - "projects/*/index.qmd"
+    - "!ar/**"
+  
+  type: grid
+  fields: [title, subtitle, categories, date, image]
+  sort: date desc
+  filter-ui: true
+  image-align: left
+  image-height: 100%
+format: 
+  html: 
+    page-layout: full
+title-block-banner: false
 ---

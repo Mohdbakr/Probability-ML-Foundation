@@ -25,6 +25,20 @@ about:
       aria-label: "Contact logo linking to Mohamed Bakr contact page"
       
 page-layout: full
+listing:
+- id: project
+  contents:
+    - "projects/*/index.qmd"
+    - "!ar/**"
+  sort: date desc
+  type: grid
+  grid-columns: 1
+  categories: false
+  sort-ui: false
+  filter-ui: false
+  fields: [title, subtitle, image]
+  max-items: 2
+  image-height: "200"
 ---
 
 ::: {#hero-heading}
