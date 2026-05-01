@@ -1,11 +1,37 @@
 ---
 title: "Quantbot"
-subtitle: "Infrastructure & Backend/GenAI Developer | UC Berkeley | Jul 2025"
+subtitle: "Multi-Agent Portfolio Advisor service for retail investors | UC Berkeley MIDS"
+description: "A cloud-based multi-agent portfolio advisor that helps retail investors build personalized portfolios based on risk tolerance, budget, and preferences."
+author:
+  - Preethi Raju
+  - Phillip Hoang
+  - Mohamed Bakr
+  - Sameer Karim
+  - Gilbert Wong
 date: "2025-07-01"
+date-modified: "2025-07-01"
+slug: "quantbot"
 image: ../../assets/images/projects/quantbot.png
 image-alt: "Quantbot project screenshot"
-description: "A cloud-based multi-agent portfolio advisor that helps retail investors build personalized portfolios based on risk tolerance, budget, and preferences."
-categories: [GenAI, Python, AWS, React]
+categories: 
+  - GenAI
+  - Python
+  - AWS
+  - React
+  - Multi-Agent Systems
+  - Neo4j
+  - PostgreSQL
+links:
+- icon: link
+  name: Website
+  url: https://thequantbot.com
+  target: _blank
+  rel: noopener noreferrer
+- icon: file
+  name: Documentation
+  url: https://docs.thequantbot.com
+  target: _blank
+  rel: noopener noreferrer
 ---
 
 ![Quantbot](../../assets/images/projects/quantbot.png){.project-banner}

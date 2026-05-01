@@ -1,11 +1,30 @@
 ---
 title: "Fraud Visualization"
-subtitle: "SME & Visualization Practitioner | UC Berkeley | Dec 2024"
+subtitle: "SME & Visualization Practitioner | UC Berkeley MIDS"
+description: "An interactive website exploring fraud case data through Altair visualizations, correlating reported fraud with socioeconomic indicators."
+author: 
+    - Zakaria Ali
+    - Mohamed Bakr
+    - Subhasis Das
+    - Hyung Jin Kim
+    - Eun-Hae Ko
 date: "2024-12-01"
+date-modified: "2024-12-01"
+slug: "fraud-visualization"
 image: ../../assets/images/projects/visualization.png
 image-alt: "Fraud visualization project"
-description: "An interactive website exploring fraud case data through Altair visualizations, correlating reported fraud with socioeconomic indicators."
-categories: [Data Visualization, Altair, Python]
+categories: 
+    - Data Visualization
+    - Altair
+    - Python
+    - Flask
+    - Occupational Fraud
+links:
+  - icon: link
+    name: Website
+    url: https://apps.ischool.berkeley.edu/~subhasis.das/w209/fraud
+    target: _blank
+    rel: noopener noreferrer
 ---
 
 ![Fraud Visualization](../../assets/images/projects/visualization.png){.project-banner}
